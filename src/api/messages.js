@@ -8,3 +8,13 @@ export const fetchMessage = ({ username, success, error }) => {
     error && error(e);
   }
 };
+
+export const setMessage = ({ username, message, success, error }) => {
+  try {
+    let userMessage = data.filter((user) => user.name === username);
+    userMessage[0].message.push(message);
+    success && success(userMessage[0].message);
+  } catch (e) {
+    error && error(e);
+  }
+};
