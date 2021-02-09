@@ -9,31 +9,36 @@ export const data = [
   {
     name: "Mark",
     image: mark,
-    lastMessage: "Hey, How are you?",
+    message: ["Hey, How are you?", "I am all good. Wbu?", "Same here!"],
   },
   {
     name: "Kartik",
     image: kartik,
-    lastMessage: "Hey, How are you?",
+    message: ["Hey, Jordan!", "Hola", "How's it going?"],
   },
   {
     name: "Smriti",
     image: smriti,
-    lastMessage: "Hey, How are you?",
+    message: [
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+      "Vivamus interdum et metus non congue",
+      "Aliquam erat volutpat",
+      "Mauris at orci tellus",
+    ],
   },
   {
     name: "Kathy",
     image: kathy,
-    lastMessage: "Hey, How are you?",
+    message: ["Mauris scelerisque congue erat", "hola"],
   },
   {
     name: "James",
     image: james,
-    lastMessage: "Hey, How are you?",
+    message: ["Hey", "pop", "iterate"],
   },
   {
     name: "Sue",
     image: sue,
-    lastMessage: "Hey, How are you?",
+    message: ["Hi, Sue", "What's up?"],
   },
 ];

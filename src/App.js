@@ -10,7 +10,7 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/message">
+        <Route path={"/message/:name"}>
           <Message isTabletOrMobile={isTabletOrMobile} />
         </Route>
         <Route path="/">
