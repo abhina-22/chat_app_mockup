@@ -12,7 +12,10 @@ export const fetchMessage = ({ username, success, error }) => {
 export const setMessage = ({ username, message, success, error }) => {
   try {
     let userMessage = data.filter((user) => user.name === username);
-    userMessage[0].message.push(message);
+    userMessage[0].message.push({
+      author: "me",
+      message: message,
+    });
     success && success(userMessage[0].message);
   } catch (e) {
     error && error(e);

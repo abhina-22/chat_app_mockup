@@ -31,7 +31,12 @@ const Inbox = ({ className, fetchMessages }) => {
             <div className="col-9" style={{ alignSelf: "center" }}>
               <h6 style={{ fontWeight: "bolder" }}>{user.name}</h6>
               <p style={{ overflowWrap: "break-word" }}>
-                {user.message[user.message.length - 1]}
+                {user.message[user.message.length - 1].message.length > 25
+                  ? user.message[user.message.length - 1].message.substring(
+                      0,
+                      25
+                    ) + "..."
+                  : user.message[user.message.length - 1].message}
               </p>
             </div>
           </div>

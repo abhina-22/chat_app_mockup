@@ -13,37 +13,38 @@ import { setMessages } from "../actions/message";
 let Message = ({ className, setMessages, selectedUser }) => {
   const { name, image } = selectedUser;
   const history = useHistory();
-  const [incomingMessage, handleChange] = useState("");
+  const [incomingMessage, handleMessageChange] = useState("");
+  const [message, setFilteredMessage] = useState(selectedUser.message);
+  const [showSearchInput, toggleSearchInput] = useState(true);
 
   const onSerchKeyWord = (e) => {
     const keyword = e.target.value;
     if (keyword !== "") {
       setFilteredMessage(
         selectedUser.message.filter((msg) =>
-          msg.toLowerCase().includes(keyword.toLowerCase())
+          msg.message.toLowerCase().includes(keyword.toLowerCase())
         )
       );
     } else {
       setFilteredMessage(selectedUser.message);
     }
   };
-  const throttledOnSerchKeyWord = throttle(onSerchKeyWord, 300);
 
-  const [message, setFilteredMessage] = useState(selectedUser.message);
-  const [isSearchable, toggleSearch] = useState(true);
   const handleKeyDown = (e) => {
     e.target.style.height = "inherit";
     e.target.style.height = `${e.target.scrollHeight}px`;
   };
+
   const onSearch = (e) => {
     e.preventDefault();
-    if (isSearchable) {
+    if (showSearchInput) {
       document.querySelector(".search-input").style.display = "block";
     } else {
       document.querySelector(".search-input").style.display = "none";
     }
-    toggleSearch(!isSearchable);
+    toggleSearchInput(!showSearchInput);
   };
+  const throttledOnSerchKeyWord = throttle(onSerchKeyWord, 300);
 
   return (
     <div className={className}>
@@ -67,19 +68,19 @@ let Message = ({ className, setMessages, selectedUser }) => {
         <br />
         {message &&
           message.map((data, index) =>
-            index % 2 ? (
-              <div className="row" key={index} style={{ padding: "5%0" }}>
-                <div className="col" style={{ textAlign: "end" }}>
-                  <p className="chat-bubble-right">{data}</p>
+            data.author === "me" ? (
+              <div className="chat row" key={index}>
+                <div className="col">
+                  <p className="chat-bubble right">{data.message}</p>
                 </div>
               </div>
             ) : (
-              <div className="row" key={index} style={{ padding: "5%0" }}>
+              <div className="chat row" key={index}>
                 <div className="col-3">
                   <img src={image} alt="profile" className="profile-image" />
                 </div>
                 <div className="col-9">
-                  <p className="chat-bubble-left">{data}</p>
+                  <p className="chat-bubble left">{data.message}</p>
                 </div>
               </div>
             )
@@ -92,7 +93,7 @@ let Message = ({ className, setMessages, selectedUser }) => {
               onKeyDown={handleKeyDown}
               className="text-area"
               value={incomingMessage}
-              onChange={(event) => handleChange(event.target.value)}
+              onChange={(event) => handleMessageChange(event.target.value)}
             ></textarea>
           </div>
           <div className="send-button col-1">
@@ -105,7 +106,7 @@ let Message = ({ className, setMessages, selectedUser }) => {
               onClick={() => {
                 if (incomingMessage !== "") {
                   setMessages(name, incomingMessage);
-                  handleChange("");
+                  handleMessageChange("");
                 }
               }}
             />
@@ -126,10 +127,6 @@ const mapDispatchToProps = {
 };
 
 Message = styled(Message)`
-  .body {
-    padding: ${(props) => (props.isTabletOrMobile ? "2% 10%" : "5% 30%")};
-    border-radius: 10%;
-  }
   .header {
     height: 150px;
     background-color: #00563b;
@@ -138,25 +135,31 @@ Message = styled(Message)`
     top: 0px;
     padding: ${(props) => (props.isTabletOrMobile ? "15% 10%" : "3% 30%")};
   }
+  .body {
+    padding: ${(props) => (props.isTabletOrMobile ? "2% 10%" : "5% 30%")};
+    border-radius: 10%;
+  }
   .profile-image {
     height: ${(props) => (props.isTabletOrMobile ? "50px" : "100px")};
     width: ${(props) => (props.isTabletOrMobile ? "50px" : "100px")};
     border-radius: 100%;
   }
-  .chat-bubble-left {
-    background: #66cdaa;
+  .chat {
+    padding: 3% 0;
+  }
+  .chat-bubble{
     padding: 10px;
-    border-radius: 20px 20px 20px 0px;
     white-space: pre-wrap;
     overflow-wrap: break-word
   }
-  .chat-bubble-right {
+  .left {
+    background: #a5ebcd;
+    border-radius: 20px 20px 20px 0px;
+  }
+  .right {
     background: #66cdaa;
-    padding: 10px;
-    border-radius: 20px 20px 0px 20px;
     margin-left: 30%;
-    white-space: pre-wrap;
-    overflow-wrap: break-word
+    border-radius: 20px 20px 0px 20px;
   }
   .search-input {
       display: none;
@@ -166,15 +169,15 @@ Message = styled(Message)`
       border-bottom: 1px solid grey;
       color: white;
     }}
-    .text-area{
-        width: 100%;
-        border-color: #66cdaa;
-        border-radius: 10px;
-    }
-    .search-icon {
+  .search-icon {
       font-size: ${(props) =>
         props.isTabletOrMobile ? "large" : "x-large"} !important;
       text-align: end;
+    }
+  .text-area{
+        width: 100%;
+        border-color: #66cdaa;
+        border-radius: 10px;
     }
     .send-button {
       margin-top: ${(props) => (props.isTabletOrMobile ? "4%" : "2%")};
