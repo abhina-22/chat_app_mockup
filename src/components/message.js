@@ -35,12 +35,13 @@ let Message = ({ className, setMessages, selectedUser }) => {
     e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
-  const onSearch = (e) => {
-    e.preventDefault();
+  const onSearch = () => {
+    const searchInput = document.querySelector(".search-input");
     if (showSearchInput) {
-      document.querySelector(".search-input").style.display = "block";
+      searchInput.style.display = "block";
+      searchInput.focus();
     } else {
-      document.querySelector(".search-input").style.display = "none";
+      searchInput.style.display = "none";
     }
     toggleSearchInput(!showSearchInput);
   };
@@ -61,6 +62,7 @@ let Message = ({ className, setMessages, selectedUser }) => {
             className="search-input"
             placeholder="Search"
             onChange={throttledOnSerchKeyWord}
+            autoFocus
           ></input>
         </div>
       </div>
@@ -85,7 +87,7 @@ let Message = ({ className, setMessages, selectedUser }) => {
               </div>
             )
           )}
-        <div className="row">
+        <div className="row" style={{ paddingTop: "10px" }}>
           <div className="col-11">
             <textarea
               autoFocus
