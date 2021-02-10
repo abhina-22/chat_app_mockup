@@ -16,7 +16,7 @@ export const setMessage = ({ username, message, success, error }) => {
       author: "me",
       message: message,
     });
-    success && success(userMessage[0].message);
+    success && success(userMessage[0]);
   } catch (e) {
     error && error(e);
   }

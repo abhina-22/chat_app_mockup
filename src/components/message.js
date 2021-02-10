@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
@@ -16,6 +16,16 @@ let Message = ({ className, setMessages, selectedUser }) => {
   const [incomingMessage, handleMessageChange] = useState("");
   const [message, setFilteredMessage] = useState(selectedUser.message);
   const [showSearchInput, toggleSearchInput] = useState(true);
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [incomingMessage]);
 
   const onSerchKeyWord = (e) => {
     const keyword = e.target.value;
@@ -87,7 +97,11 @@ let Message = ({ className, setMessages, selectedUser }) => {
               </div>
             )
           )}
-        <div className="row" style={{ paddingTop: "10px" }}>
+        <div
+          className="row"
+          style={{ paddingTop: "10px" }}
+          ref={messagesEndRef}
+        >
           <div className="col-11">
             <textarea
               autoFocus

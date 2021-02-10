@@ -18,10 +18,7 @@ const chat = (state = {}, action) => {
     case actionTypes.SET_MESSAGE_SUCCESS:
       return {
         ...state,
-        selectedUser: {
-          ...state.selectedUser,
-          message: action.payload,
-        },
+        selectedUser: action.payload,
         errored: false,
       };
     case actionTypes.SET_MESSAGE_ERROR:
