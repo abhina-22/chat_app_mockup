@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+import throttle from "lodash.throttle";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowAltLeft } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -16,19 +18,32 @@ let Message = ({ className, isTabletOrMobile, setMessages, selectedUser }) => {
 
   const onSerchKeyWord = (e) => {
     const keyword = e.target.value;
-    setFilteredMessage(
-      message.filter((msg) => msg.toLowerCase().includes(keyword.toLowerCase()))
-    );
+    if (keyword !== "") {
+      setFilteredMessage(
+        selectedUser.message.filter((msg) =>
+          msg.toLowerCase().includes(keyword.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredMessage(selectedUser.message);
+    }
   };
+  const throttledOnSerchKeyWord = throttle(onSerchKeyWord, 100);
 
   const [message, setFilteredMessage] = useState(selectedUser.message);
+  const [isSearchable, toggleSearch] = useState(true);
   const handleKeyDown = (e) => {
     e.target.style.height = "inherit";
     e.target.style.height = `${e.target.scrollHeight}px`;
   };
   const onSearch = (e) => {
     e.preventDefault();
-    document.querySelector(".search-input").style.display = "block";
+    if (isSearchable) {
+      document.querySelector(".search-input").style.display = "block";
+    } else {
+      document.querySelector(".search-input").style.display = "none";
+    }
+    toggleSearch(!isSearchable);
   };
 
   return (
@@ -46,8 +61,12 @@ let Message = ({ className, isTabletOrMobile, setMessages, selectedUser }) => {
           </h2>
         </div>
 
-        <div className="col" style={{ textAlign: "end" }} onClick={onSearch}>
-          <FontAwesomeIcon icon={faSearch} style={{ fontSize: "large" }} />
+        <div className="col" style={{ textAlign: "end" }}>
+          <FontAwesomeIcon
+            icon={faSearch}
+            style={{ fontSize: "large" }}
+            onClick={onSearch}
+          />
           <input
             className="search-input"
             placeholder="Search"
@@ -58,8 +77,7 @@ let Message = ({ className, isTabletOrMobile, setMessages, selectedUser }) => {
               background: "transparent",
               borderBottom: "1px solid grey",
             }}
-            onChange={onSerchKeyWord}
-            onC
+            onChange={throttledOnSerchKeyWord}
           ></input>
         </div>
       </div>
