@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 import throttle from "lodash.throttle";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLongArrowAltLeft } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -11,7 +10,7 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 import { setMessages } from "../actions/message";
 
-let Message = ({ className, isTabletOrMobile, setMessages, selectedUser }) => {
+let Message = ({ className, setMessages, selectedUser }) => {
   const { name, image } = selectedUser;
   const history = useHistory();
   const [incomingMessage, handleChange] = useState("");
@@ -28,7 +27,7 @@ let Message = ({ className, isTabletOrMobile, setMessages, selectedUser }) => {
       setFilteredMessage(selectedUser.message);
     }
   };
-  const throttledOnSerchKeyWord = throttle(onSerchKeyWord, 100);
+  const throttledOnSerchKeyWord = throttle(onSerchKeyWord, 300);
 
   const [message, setFilteredMessage] = useState(selectedUser.message);
   const [isSearchable, toggleSearch] = useState(true);
@@ -48,35 +47,18 @@ let Message = ({ className, isTabletOrMobile, setMessages, selectedUser }) => {
 
   return (
     <div className={className}>
-      <div
-        className="row header"
-        style={
-          isTabletOrMobile ? { padding: "15% 10%" } : { padding: "3% 30%" }
-        }
-      >
-        <div className="col">
+      <div className="row header">
+        <div className="col-5">
           <h2 onClick={() => history.push("/")}>
-            <FontAwesomeIcon icon={faLongArrowAltLeft} /> &nbsp; &nbsp;
+            <FontAwesomeIcon icon={faLongArrowAltLeft} /> &nbsp;
             {name}
           </h2>
         </div>
-
-        <div className="col" style={{ textAlign: "end" }}>
-          <FontAwesomeIcon
-            icon={faSearch}
-            style={{ fontSize: "large" }}
-            onClick={onSearch}
-          />
+        <div className="search-icon col-7">
+          <FontAwesomeIcon icon={faSearch} onClick={onSearch} />
           <input
             className="search-input"
             placeholder="Search"
-            style={{
-              display: "none",
-              border: "none",
-              outline: "none",
-              background: "transparent",
-              borderBottom: "1px solid grey",
-            }}
             onChange={throttledOnSerchKeyWord}
           ></input>
         </div>
@@ -108,19 +90,12 @@ let Message = ({ className, isTabletOrMobile, setMessages, selectedUser }) => {
               autoFocus
               placeholder="Type your message here.."
               onKeyDown={handleKeyDown}
-              style={{
-                width: "100%",
-                borderColor: "#66cdaa",
-                borderRadius: "10px",
-              }}
+              className="text-area"
               value={incomingMessage}
               onChange={(event) => handleChange(event.target.value)}
             ></textarea>
           </div>
-          <div
-            className="col-1"
-            style={isTabletOrMobile ? { marginTop: "4%" } : { marginTop: "2%" }}
-          >
+          <div className="send-button col-1">
             <FontAwesomeIcon
               icon={faPaperPlane}
               style={{
@@ -128,8 +103,10 @@ let Message = ({ className, isTabletOrMobile, setMessages, selectedUser }) => {
                 fontSize: "x-large",
               }}
               onClick={() => {
-                setMessages(name, incomingMessage);
-                handleChange("");
+                if (incomingMessage !== "") {
+                  setMessages(name, incomingMessage);
+                  handleChange("");
+                }
               }}
             />
           </div>
@@ -159,6 +136,7 @@ Message = styled(Message)`
     color: white;
     position: sticky;
     top: 0px;
+    padding: ${(props) => (props.isTabletOrMobile ? "15% 10%" : "3% 30%")};
   }
   .profile-image {
     height: ${(props) => (props.isTabletOrMobile ? "50px" : "100px")};
@@ -166,19 +144,41 @@ Message = styled(Message)`
     border-radius: 100%;
   }
   .chat-bubble-left {
-    alig-self: center;
     background: #66cdaa;
     padding: 10px;
     border-radius: 20px 20px 20px 0px;
     white-space: pre-wrap;
+    overflow-wrap: break-word
   }
   .chat-bubble-right {
-    alig-self: center;
     background: #66cdaa;
     padding: 10px;
     border-radius: 20px 20px 0px 20px;
     margin-left: 30%;
     white-space: pre-wrap;
+    overflow-wrap: break-word
+  }
+  .search-input {
+      display: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      border-bottom: 1px solid grey;
+      color: white;
+    }}
+    .text-area{
+        width: 100%;
+        border-color: #66cdaa;
+        border-radius: 10px;
+    }
+    .search-icon {
+      font-size: ${(props) =>
+        props.isTabletOrMobile ? "large" : "x-large"} !important;
+      text-align: end;
+    }
+    .send-button {
+      margin-top: ${(props) => (props.isTabletOrMobile ? "4%" : "2%")};
+    }
   }
 `;
 export default connect(mapStateToProps, mapDispatchToProps)(Message);

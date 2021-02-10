@@ -1,5 +1,5 @@
 import * as types from "./types";
-import { fetchMessage, setMessage } from "../api/messages";
+import { fetchMessage, setMessage } from "../api";
 
 export const fetchMessages = (username) => {
   return (dispatch) => {
